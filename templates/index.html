@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>No Mail - Use Temp Mail</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-container": "#3b82f6",
+                        "primary": "#3b82f6"
+                    },
+                    fontFamily: {
+                        "headline": ["Outfit", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                    },
+                    animation: {
+                        'blob': 'blob 10s infinite',
+                        'blob-slow': 'blob 15s infinite reverse',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'glow-light': 'glowLight 2s ease-in-out infinite alternate',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 10px rgba(59, 130, 246, 0.4)' },
+                            '100%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.8), 0 0 30px rgba(59, 130, 246, 0.6)' },
+                        },
+                        glowLight: {
+                            '0%': { boxShadow: '0 0 15px rgba(37, 99, 235, 0.2)' },
+                            '100%': { boxShadow: '0 0 25px rgba(37, 99, 235, 0.4)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            const icon = document.getElementById('theme-icon');
+            if (icon) icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
+        }
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            applyTheme(savedTheme);
+        } else {
+            const wantsDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(wantsDark ? 'dark' : 'light');
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Glass styling */
+        .glass-box {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        .dark .glass-box {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(135deg, #2563eb, #7e22ce);
+        }
+
+        .dark .text-gradient {
+            background-image: linear-gradient(135deg, #60a5fa, #a855f7);
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, #2563eb, #6d28d9);
+            transition: opacity 0.3s;
+        }
+
+        .dark .btn-gradient {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        }
+
+        .btn-gradient:hover {
+            opacity: 0.9;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .dark ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-50 min-h-screen text-sm relative selection:bg-primary/20">
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none opacity-40 dark:opacity-100">
+        <div
+            class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-400 dark:bg-blue-600/20 blur-[100px] animate-blob mix-blend-multiply dark:mix-blend-screen">
+        </div>
+        <div
+            class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-300 dark:bg-purple-600/20 blur-[120px] animate-blob-slow mix-blend-multiply dark:mix-blend-screen">
+        </div>
+        <div class="absolute top-[40%] left-[20%] w-[30%] h-[30%] rounded-full bg-indigo-300 dark:bg-indigo-600/10 blur-[80px] animate-blob mix-blend-multiply dark:mix-blend-screen"
+            style="animation-delay: 2s;"></div>
+    </div>
+
+    <header class="glass-box fixed w-full top-0 z-50 !border-b-slate-200 dark:!border-b-white/5 !rounded-none">
+        <div class="flex justify-between items-center w-full max-w-7xl mx-auto px-5 md:px-8 py-3">
+            <div
+                class="flex items-center gap-3 text-xl font-black tracking-tight text-slate-800 dark:text-white hover:opacity-80 transition cursor-pointer">
+                <div
+                    class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <span class="material-symbols-outlined text-white text-lg"
+                        style="font-variation-settings: 'FILL' 1;">mail</span>
+                </div>
+                <span>No Mail</span>
+            </div>
+            <div class="flex items-center gap-4 md:gap-6">
+                <div class="hidden md:flex items-center gap-8 mr-4 text-sm font-medium">
+                    <a class="text-slate-900 dark:text-white border-b-2 border-primary pb-1 font-bold"
+                        href="#inbox-container">Inbox</a>
+                    <a
+                        class="recovery-btn text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white pb-1 transition-colors cursor-pointer font-semibold">Recovery</a>
+                </div>
+                <div class="flex items-center gap-2 md:gap-3">
+                    <button
+                        class="md:hidden material-symbols-outlined text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white p-2 rounded-full transition-colors glass-box"
+                        id="mobile-refresh-btn">refresh</button>
+                    <button id="theme-toggle"
+                        class="flex items-center justify-center p-2 rounded-full glass-box hover:bg-slate-100 dark:hover:bg-white/10 transition text-slate-500 dark:text-slate-300">
+                        <span id="theme-icon" class="material-symbols-outlined text-lg">dark_mode</span>
+                    </button>
+                    <button id="profile-nav-btn" title="Login / Manage Domains"
+                        class="flex items-center gap-2 px-3 py-1.5 rounded-full glass-box hover:bg-slate-100 dark:hover:bg-white/10 transition text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
+                        <span class="material-symbols-outlined text-lg" data-icon="account_circle">account_circle</span>
+                        <span class="hidden md:block text-xs font-bold uppercase tracking-wider">Account</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="pt-20 md:pt-24 pb-32 md:pb-8 max-w-4xl mx-auto px-4 sm:px-6 relative z-10 flex flex-col items-center">
+        <section class="w-full flex flex-col items-center justify-center text-center space-y-5 mb-10 animate-fade-in">
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-box border !border-primary/20 dark:!border-primary/30 text-primary text-[10px] font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(59,130,246,0.1)] dark:shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                <span class="relative flex h-2 w-2">
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                </span>
+                Secure Session Active
+            </div>
+
+            <h1
+                class="text-3xl md:text-5xl font-headline font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                Your <span class="text-gradient">Disposable</span> Workspace
+            </h1>
+            <p class="text-slate-600 dark:text-slate-400 max-w-lg mx-auto text-sm font-medium">
+                Protect your personal email from spam, bots, and phishing. Generate a secure, temporary inbox instantly.
+            </p>
+
+            <div class="w-full max-w-2xl mt-5 relative group">
+                <div
+                    class="absolute -inset-1 bg-gradient-to-r from-blue-400 to-purple-400 dark:from-blue-500 dark:to-purple-600 rounded-xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200">
+                </div>
+                <div
+                    class="relative glass-box p-2 md:p-3 rounded-xl flex items-center justify-between shadow-lg dark:shadow-xl">
+                    <div class="flex-1 overflow-hidden px-3 py-1">
+                        <span id="email-address-text"
+                            class="text-lg md:text-2xl font-body font-bold text-slate-800 dark:text-white tracking-wide truncate block text-left">Loading...</span>
+                    </div>
+                    <button id="copy-btn"
+                        class="ml-2 btn-gradient text-white px-4 py-2.5 md:px-5 md:py-2.5 rounded-lg flex items-center justify-center active:scale-95 transition-all shadow-md text-xs md:text-sm gap-2 font-bold group-hover:animate-glow-light dark:group-hover:animate-glow">
+                        <span class="material-symbols-outlined text-sm">content_copy</span>
+                        <span class="hidden md:block">Copy</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="action-buttons-container"
+                class="flex flex-wrap items-center justify-center gap-2 w-full max-w-2xl mt-4">
+                <button id="generate-btn"
+                    class="flex-1 md:flex-none glass-box hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-white py-2 px-4 rounded-lg text-xs font-bold transition-all hover:-translate-y-0.5 shadow-sm md:shadow-md flex items-center justify-center gap-1.5">
+                    <span class="material-symbols-outlined text-blue-500 dark:text-blue-400 text-sm">shuffle</span>
+                    <span>Generate Mail</span>
+                </button>
+                <button id="custom-btn"
+                    class="flex-1 md:flex-none glass-box hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-white py-2 px-4 rounded-lg text-xs font-bold transition-all hover:-translate-y-0.5 shadow-sm md:shadow-md flex items-center justify-center gap-1.5">
+                    <span class="material-symbols-outlined text-purple-500 dark:text-purple-400 text-sm">edit</span>
+                    <span>Custom Mail</span>
+                </button>
+                <button id="domain-generate-btn"
+                    class="hidden flex-1 md:flex-none glass-box hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-white py-2 px-4 rounded-lg text-xs font-bold transition-all hover:-translate-y-0.5 shadow-sm md:shadow-md flex items-center justify-center gap-1.5">
+                    <span class="material-symbols-outlined text-emerald-500 dark:text-emerald-400 text-sm">domain</span>
+                    <span>Domain Specific</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="w-full max-w-4xl animate-fade-in" style="animation-delay: 0.2s;">
+            <div class="flex justify-between items-end px-2 mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full glass-box flex items-center justify-center">
+                        <span class="material-symbols-outlined text-blue-600 dark:text-blue-400 text-sm">inbox</span>
+                    </div>
+                    <h2
+                        class="text-xl md:text-2xl font-headline font-bold text-slate-900 dark:text-white tracking-tight">
+                        Inbox Live</h2>
+                    <button id="manual-refresh-btn"
+                        class="ml-2 flex items-center justify-center p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white glass-box rounded-full transition-all duration-300 active:rotate-180"
+                        title="Refresh Inbox">
+                        <span class="material-symbols-outlined text-lg">sync</span>
+                    </button>
+                </div>
+                <div class="glass-box px-2.5 py-1 rounded-lg flex items-center gap-2">
+                    <span class="relative flex h-2 w-2"><span
+                            class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 dark:bg-green-400 opacity-75"></span><span
+                            class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span></span>
+                    <span id="unread-count"
+                        class="text-[10px] text-slate-600 dark:text-slate-300 font-bold uppercase tracking-wider">0
+                        Messages</span>
+                </div>
+            </div>
+
+            <div id="inbox-container" class="space-y-3">
+                <div
+                    class="glass-box p-8 rounded-xl flex flex-col items-center justify-center text-center transition-all border border-dashed border-slate-300 dark:border-slate-600/50">
+                    <div
+                        class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center mb-3">
+                        <span
+                            class="material-symbols-outlined text-4xl text-slate-400 dark:text-slate-500">hourglass_empty</span>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-800 dark:text-white">Awaiting Incoming Packets</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs mx-auto">Emails sent to your
+                        temporary address will automatically appear here within seconds.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <nav
+        class="md:hidden fixed bottom-4 left-4 right-4 z-50 glass-box rounded-2xl shadow-xl flex justify-around items-center px-2 py-2">
+        <a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white p-2 w-1/3"
+            href="#inbox-container">
+            <span class="material-symbols-outlined text-xl">mail</span>
+            <span class="font-body text-[10px] font-bold uppercase mt-1">Inbox</span>
+        </a>
+        <a id="mobile-generate-btn"
+            class="flex flex-col items-center justify-center w-12 h-12 -mt-5 bg-gradient-to-tr from-blue-500 to-purple-600 text-white rounded-full shadow-[0_0_15px_rgba(59,130,246,0.3)] dark:shadow-[0_0_20px_rgba(59,130,246,0.5)] active:scale-95 transition-all outline outline-4 outline-slate-50 dark:outline-[#020617] cursor-pointer">
+            <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">add</span>
+        </a>
+        <a
+            class="recovery-btn flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white p-2 w-1/3 cursor-pointer">
+            <span class="material-symbols-outlined text-xl">history</span>
+            <span class="font-body text-[10px] font-bold uppercase mt-1">Vault</span>
+        </a>
+    </nav>
+
+    <div id="privacy-notice"
+        class="hidden fixed bottom-24 md:bottom-8 left-1/2 transform -translate-x-1/2 max-w-sm w-11/12 glass-panel p-3 rounded-xl z-40 transition-opacity duration-300">
+        <div class="flex justify-between items-start mb-1.5">
+            <h3 class="font-headline font-bold text-slate-900 dark:text-white text-xs flex items-center gap-2">
+                <span class="material-symbols-outlined text-green-500 dark:text-green-400 text-sm">shield</span>
+                Zero-Log Architecture
+            </h3>
+            <button id="close-privacy-btn"
+                class="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors bg-slate-100 dark:bg-white/5 rounded-full p-1"><span
+                    class="material-symbols-outlined text-xs">close</span></button>
+        </div>
+        <p class="text-[10px] text-slate-600 dark:text-slate-300 leading-relaxed ml-6">We operate with strict privacy.
+            Your real IP, identity, and incoming data are completely ephemeral.</p>
+    </div>
+
+    <div id="toast"
+        class="fixed top-24 md:top-6 right-1/2 translate-x-1/2 md:translate-x-0 md:right-6 glass-panel px-4 py-3 rounded-xl flex items-center gap-3 z-[150] opacity-0 pointer-events-none transition-all duration-300 -translate-y-4">
+        <div
+            class="w-6 h-6 rounded-full bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400 flex items-center justify-center shadow-inner">
+            <span class="material-symbols-outlined text-xs" style="font-variation-settings: 'FILL' 1;">done</span>
+        </div>
+        <p class="font-bold text-slate-800 dark:text-white text-xs tracking-wide">Copied to clipboard!</p>
+    </div>
+
+    <div id="email-modal"
+        class="fixed inset-0 z-[200] hidden flex items-center justify-center p-2 md:p-6 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md transition-all opacity-0 duration-300">
+        <div
+            class="bg-white dark:bg-[#0f172a] w-full max-w-4xl h-[90vh] md:h-[85vh] rounded-2xl md:rounded-3xl shadow-2xl flex flex-col overflow-hidden transform scale-95 transition-all duration-300 border border-slate-200 dark:border-white/10">
+            <div
+                class="flex justify-between items-start p-4 md:p-5 border-b border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-[#020617]/50">
+                <div class="flex-1 pr-4">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span
+                            class="px-2 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400 text-[10px] font-bold uppercase tracking-wider">Message</span>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium"><span
+                                id="modal-date">Date</span></p>
+                    </div>
+                    <h3 id="modal-subject"
+                        class="font-headline font-bold text-lg md:text-xl text-slate-900 dark:text-white leading-tight mb-2">
+                        Subject</h3>
+                    <div class="flex items-center gap-2">
+                        <div
+                            class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-xs text-slate-600 dark:text-white">person</span>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300"><span id="modal-from"
+                                class="font-semibold text-slate-900 dark:text-white">Sender</span></p>
+                    </div>
+                </div>
+                <div class="flex gap-2 shrink-0">
+                    <button id="download-eml-btn"
+                        class="p-2 bg-slate-100 dark:bg-white/5 hover:bg-blue-100 dark:hover:bg-blue-500/20 text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-colors"
+                        title="Download .eml">
+                        <span class="material-symbols-outlined text-sm">download</span>
+                    </button>
+                    <button id="close-email-modal"
+                        class="p-2 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-red-500/20 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-red-400 rounded-xl transition-colors">
+                        <span class="material-symbols-outlined text-sm">close</span>
+                    </button>
+                </div>
+            </div>
+            <div class="flex-1 bg-white relative flex flex-col overflow-hidden">
+                <div class="absolute inset-0 bg-slate-50 flex items-center justify-center -z-10">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+                <iframe id="modal-iframe" class="flex-1 w-full border-none bg-white z-10"
+                    sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-scripts"></iframe>
+                <div id="modal-attachments"
+                    class="hidden p-3 bg-slate-50 border-t border-slate-200 flex gap-2 overflow-x-auto whitespace-nowrap z-20 shadow-inner">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="input-modal"
+        class="fixed inset-0 z-[200] hidden flex items-end md:items-center justify-center p-0 md:p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md transition-all opacity-0 duration-300">
+        <div
+            class="glass-box w-full max-w-sm rounded-t-3xl md:rounded-2xl shadow-2xl flex flex-col overflow-hidden transform translate-y-full md:translate-y-0 md:scale-95 transition-all duration-300 border !border-slate-200 dark:!border-white/10 !bg-white/95 dark:!bg-[#0f172a]/90">
+            <div class="p-5 md:p-6 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-inner">
+                            <span id="input-modal-icon" class="material-symbols-outlined text-xl">edit</span>
+                        </div>
+                        <div>
+                            <h3 id="input-modal-title"
+                                class="font-headline font-bold text-lg md:text-xl text-slate-900 dark:text-white">Title
+                            </h3>
+                            <p id="input-modal-desc" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                Description</p>
+                        </div>
+                    </div>
+                    <button id="close-input-modal"
+                        class="p-1.5 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 rounded-full transition-colors">
+                        <span class="material-symbols-outlined text-xs">close</span>
+                    </button>
+                </div>
+
+                <div class="space-y-3 pt-1">
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="input-modal-field" placeholder="username" autocomplete="off"
+                            class="w-1/2 bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-slate-800 dark:text-white transition-all text-sm font-medium">
+                        <div id="input-modal-at"
+                            class="w-8 h-8 flex items-center justify-center bg-slate-100 dark:bg-white/5 rounded-full text-slate-500 text-xs font-black">
+                            @</div>
+                        <select id="domain-select"
+                            class="w-1/2 bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-lg px-3 py-2.5 focus:outline-none focus:border-blue-500 text-slate-800 dark:text-white transition-all text-sm font-medium">
+                            <option value="bbinl.site" class="bg-white dark:bg-slate-900">bbinl.site</option>
+                        </select>
+                    </div>
+                    <p id="input-modal-error"
+                        class="text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-400/10 px-3 py-2 rounded-lg text-xs font-bold hidden border border-red-100 dark:border-red-400/20 flex gap-2 items-center">
+                        <span class="material-symbols-outlined text-sm">warning</span> <span
+                            class="error-text">Error</span>
+                    </p>
+                </div>
+
+                <button id="input-modal-submit"
+                    class="w-full py-3 btn-gradient text-white rounded-lg text-sm font-bold transition-all active:scale-95 shadow-md flex items-center justify-center gap-2 mt-2">
+                    <span id="input-modal-btn-text">Action</span>
+                    <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                </button>
+
+                <div id="modal-history-section" class="hidden pt-4 mt-3 border-t border-slate-100 dark:border-white/10">
+                    <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 pl-1">Vault Records
+                    </h4>
+                    <div id="modal-history-list" class="space-y-2 max-h-40 overflow-y-auto pr-2">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login/Signup Modal -->
+    <div id="login-modal"
+        class="fixed inset-0 z-[200] hidden bg-slate-900/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-4 transition-all opacity-100 duration-300">
+        <div
+            class="glass-box !bg-white/95 dark:!bg-[#0f172a]/95 rounded-2xl w-full max-w-sm p-6 shadow-2xl border !border-slate-200 dark:!border-white/10">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-headline font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-sm">shield_person</span>
+                    </div>
+                    Account Access
+                </h2>
+                <button onclick="document.getElementById('login-modal').classList.add('hidden')"
+                    class="text-slate-400 hover:text-slate-700 dark:hover:text-white p-2 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 transition"><span
+                        class="material-symbols-outlined text-sm">close</span></button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label
+                        class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 pl-1">Admin
+                        Email</label>
+                    <input type="email" id="auth-email" placeholder="admin@domain.com"
+                        class="w-full bg-slate-50 dark:bg-black/50 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                </div>
+                <div>
+                    <label
+                        class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 pl-1">Master
+                        Password</label>
+                    <div class="relative">
+                        <input type="password" id="auth-pass" placeholder="••••••••"
+                            class="w-full bg-slate-50 dark:bg-black/50 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-lg px-3 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all pr-10">
+                        <button type="button"
+                            onclick="const p=document.getElementById('auth-pass'); const i=this.querySelector('span'); if(p.type==='password'){p.type='text';i.textContent='visibility_off';}else{p.type='password';i.textContent='visibility';}"
+                            class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors p-1.5 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-white/5">
+                            <span class="material-symbols-outlined text-xs">visibility</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 pt-3">
+                    <button id="auth-login-btn"
+                        class="flex-1 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-white rounded-lg py-2.5 font-bold transition-all text-xs">Sign
+                        In</button>
+                    <button id="auth-signup-btn"
+                        class="flex-1 btn-gradient text-white rounded-lg py-2.5 font-bold transition-all shadow-md text-xs">Sign
+                        Up</button>
+                </div>
+                <div class="mt-3 p-2.5 rounded-lg bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-white/5 hidden"
+                    id="auth-status-box">
+                    <p id="auth-error"
+                        class="text-[10px] text-red-500 dark:text-red-400 font-bold flex gap-1.5 items-center hidden">
+                        <span class="material-symbols-outlined text-xs">error</span> <span class="msg"></span>
+                    </p>
+                    <p id="auth-success"
+                        class="text-[10px] text-green-600 dark:text-green-400 font-bold flex gap-1.5 items-center hidden">
+                        <span class="material-symbols-outlined text-xs">check_circle</span> <span class="msg"></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Domain Modal -->
+    <div id="custom-domain-modal"
+        class="fixed inset-0 z-[200] hidden flex items-center justify-center p-4 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md transition-all opacity-0 duration-300">
+        <div
+            class="glass-box w-full max-w-md rounded-2xl shadow-2xl flex flex-col overflow-hidden transform scale-95 transition-all duration-300 border !border-slate-200 dark:!border-white/10 !bg-white/95 dark:!bg-[#0f172a]/95">
+            <div class="p-6 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 flex items-center justify-center shadow-inner">
+                            <span class="material-symbols-outlined text-xl">settings_ethernet</span>
+                        </div>
+                        <div>
+                            <h3 class="font-headline font-bold text-lg md:text-xl text-slate-900 dark:text-white">Use
+                                Your Own Domain</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Connect your domain via
+                                Cloudflare Email Routing</p>
+                        </div>
+                    </div>
+                    <button id="close-custom-domain-modal"
+                        class="p-1.5 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 dark:text-slate-400 rounded-full transition-colors">
+                        <span class="material-symbols-outlined text-xs">close</span>
+                    </button>
+                </div>
+
+                <div class="space-y-4 pt-2">
+                    <div
+                        class="bg-blue-50 dark:bg-blue-500/10 p-4 rounded-xl border border-blue-100 dark:border-blue-500/20">
+                        <h4 class="text-xs font-bold text-blue-700 dark:text-blue-400 mb-2 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">info</span>
+                            Setup Instructions
+                        </h4>
+                        <ol class="text-[11px] text-slate-600 dark:text-slate-300 space-y-2 ml-4 list-decimal">
+                            <li>Go to <b>Cloudflare Dashboard</b> > Choose your domain.</li>
+                            <li>Navigate to <b>Email</b> > <b>Email Routing</b>.</li>
+                            <li>Create a <b>Custom Address</b> (e.g., <code>*@yourdomain.com</code>).</li>
+                            <li>Set Action to <b>Forward to email</b>.</li>
+                            <li>Set Destination to your unique No Mail address:</li>
+                        </ol>
+                    </div>
+
+                    <div class="relative group">
+                        <div
+                            class="absolute -inset-1 bg-gradient-to-r from-orange-400 to-red-400 rounded-xl blur opacity-20 transition">
+                        </div>
+                        <div
+                            class="relative bg-white dark:bg-black/40 border border-slate-200 dark:border-white/10 rounded-xl p-3 flex items-center justify-between">
+                            <code id="forwarding-address"
+                                class="text-sm font-bold text-slate-800 dark:text-white">loading...</code>
+                            <button id="copy-forward-btn"
+                                class="p-2 bg-slate-100 dark:bg-white/5 hover:bg-orange-100 dark:hover:bg-orange-400/20 text-orange-600 dark:text-orange-400 rounded-lg transition-all">
+                                <span class="material-symbols-outlined text-sm">content_copy</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 text-center italic">
+                        Any email sent to your domain will now appear in this No Mail inbox!
+                    </p>
+                </div>
+
+                <button id="start-tracking-btn"
+                    class="w-full py-3 btn-gradient text-white rounded-lg text-sm font-bold transition-all active:scale-95 shadow-md">
+                    Got it, Start Tracking
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Logic for the toggle -->
+    <script>
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.contains('dark');
+                const newTheme = isDark ? 'light' : 'dark';
+                applyTheme(newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+        }
+    </script>
+    <!-- Required JS hook to fix the JS login status display since I changed the HTML structure slightly for errors -->
+    <script>
+        const observeDOM = new MutationObserver((mutations) => {
+            const errNode = document.getElementById('auth-error');
+            const sucNode = document.getElementById('auth-success');
+            const box = document.getElementById('auth-status-box');
+            if (!errNode || !sucNode || !box) return;
+
+            mutations.forEach((mutation) => {
+                if (mutation.target === errNode && errNode.textContent) {
+                    const msgSpan = errNode.querySelector('.msg');
+                    if (msgSpan) msgSpan.textContent = errNode.childNodes[errNode.childNodes.length - 1].textContent;
+                    if (!errNode.classList.contains('hidden')) box.classList.remove('hidden');
+                }
+                if (mutation.target === sucNode && sucNode.textContent) {
+                    const msgSpan = sucNode.querySelector('.msg');
+                    if (msgSpan) msgSpan.textContent = sucNode.childNodes[sucNode.childNodes.length - 1].textContent;
+                    if (!sucNode.classList.contains('hidden')) box.classList.remove('hidden');
+                }
+            });
+        });
+        const errNode = document.getElementById('auth-error');
+        const sucNode = document.getElementById('auth-success');
+        if (errNode) observeDOM.observe(errNode, { childList: true, characterData: true, subtree: true });
+        if (sucNode) observeDOM.observe(sucNode, { childList: true, characterData: true, subtree: true });
+
+        const inputErr = document.getElementById('input-modal-error');
+        if (inputErr) {
+            new MutationObserver((m) => {
+                if (inputErr.textContent) {
+                    const msgSpan = inputErr.querySelector('.error-text');
+                    if (msgSpan) msgSpan.textContent = inputErr.childNodes[inputErr.childNodes.length - 1].textContent;
+                }
+            }).observe(inputErr, { childList: true, characterData: true, subtree: true });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/postal-mime@1.0.11/dist/postal-mime.min.js"></script>
+    <script src="/static/js/script.js?v=10"></script>
+
+    <style>
+        #inbox-container>div[onclick] {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            display: flex;
+            gap: 1rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            margin-bottom: 0.5rem;
+        }
+
+        .dark #inbox-container>div[onclick] {
+            background: rgba(30, 41, 59, 0.6);
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        #inbox-container>div[onclick]:hover {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark #inbox-container>div[onclick]:hover {
+            background: rgba(51, 65, 85, 0.8);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+
+        #inbox-container>div[onclick]>div:first-child {
+            background: linear-gradient(135deg, #2563eb10, #8b5cf610);
+            color: #3b82f6;
+            border: 1px solid rgba(37, 99, 235, 0.1);
+        }
+
+        .dark #inbox-container>div[onclick]>div:first-child {
+            background: linear-gradient(135deg, #3b82f640, #8b5cf640);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        #inbox-container>div[onclick] h4 {
+            color: #0f172a;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+        }
+
+        .dark #inbox-container>div[onclick] h4 {
+            color: #f8fafc;
+        }
+
+        #inbox-container>div[onclick] p {
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        .dark #inbox-container>div[onclick] p {
+            color: #94a3b8;
+        }
+
+        #inbox-container>div[onclick] span.text-on-surface-variant {
+            color: #94a3b8;
+        }
+
+        .dark #inbox-container>div[onclick] span.text-on-surface-variant {
+            color: #64748b;
+        }
+
+        #modal-history-list button {
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            color: #475569;
+            outline: none;
+        }
+
+        .dark #modal-history-list button {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.05);
+            color: #cbd5e1;
+        }
+
+        #modal-history-list button:hover {
+            background: rgba(37, 99, 235, 0.05);
+            border-color: rgba(37, 99, 235, 0.2);
+            color: #0f172a;
+        }
+
+        .dark #modal-history-list button:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            color: #ffffff;
+        }
+    </style>
+</body>
+
+</html>

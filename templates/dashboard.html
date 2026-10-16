@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>SaaS Dashboard | Digital Sanctuary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-container": "#3b82f6",
+                        "primary": "#3b82f6"
+                    },
+                    fontFamily: {
+                        "headline": ["Outfit", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            const icon = document.getElementById('theme-icon');
+            if(icon) icon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
+        }
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            applyTheme(savedTheme);
+        } else {
+            const wantsDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(wantsDark ? 'dark' : 'light');
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .glass-box { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); }
+        .dark .glass-box { background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }
+        .btn-gradient { background: linear-gradient(135deg, #2563eb, #6d28d9); transition: opacity 0.3s; }
+        .dark .btn-gradient { background: linear-gradient(135deg, #3b82f6, #8b5cf6); }
+        .btn-gradient:hover { opacity: 0.9; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+
+<body class="bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-50 min-h-screen text-sm relative">
+    <header class="glass-box fixed w-full top-0 z-50 !border-b-slate-200 dark:!border-b-white/5 !rounded-none">
+        <div class="flex justify-between items-center w-full max-w-7xl mx-auto px-5 md:px-8 py-3">
+            <div class="flex items-center gap-3 text-xl font-black tracking-tight text-slate-800 dark:text-white">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <span class="material-symbols-outlined text-white text-lg" style="font-variation-settings: 'FILL' 1;">mail</span>
+                </div>
+                <span>TempSaaS</span>
+            </div>
+            <div class="flex items-center gap-2 md:gap-6">
+                <a href="/" class="flex flex-col items-center justify-center text-slate-600 dark:text-slate-400 font-semibold hover:text-primary dark:hover:text-white transition-colors p-1" title="Go to Inbox">
+                    <span class="material-symbols-outlined text-[22px] md:hidden">inbox</span>
+                    <span class="hidden md:inline">Go to Inbox</span>
+                </a>
+                <button id="theme-toggle" class="flex items-center justify-center p-2 rounded-full glass-box hover:bg-slate-100 dark:hover:bg-white/10 transition text-slate-500 dark:text-slate-300 mx-1">
+                    <span id="theme-icon" class="material-symbols-outlined text-lg">dark_mode</span>
+                </button>
+                <button id="logout-btn" class="bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 hover:bg-red-50 dark:hover:bg-red-500/20 hover:text-red-600 dark:hover:text-red-400 p-2 md:px-4 md:py-2 rounded-lg font-bold transition-all text-sm border border-transparent dark:border-white/5 flex items-center justify-center gap-2" title="Logout">
+                    <span class="material-symbols-outlined text-[18px] md:hidden">logout</span>
+                    <span class="hidden md:inline">Logout</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="pt-20 md:pt-24 px-4 py-8 md:p-6 max-w-5xl mx-auto space-y-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 glass-box p-5 md:p-6 rounded-2xl">
+            <div>
+                <h1 class="text-2xl font-headline font-bold text-slate-900 dark:text-white">My Custom Domains</h1>
+                <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Manage your BYOD configuration and IMAP gateways.</p>
+            </div>
+            <button onclick="document.getElementById('add-modal').classList.remove('hidden')" class="btn-gradient text-white px-5 py-2.5 rounded-xl font-bold transition-colors flex items-center gap-2 shadow-sm shrink-0">
+                <span class="material-symbols-outlined text-sm">add</span> Add Domain
+            </button>
+        </div>
+
+        <div class="glass-box rounded-2xl shadow-sm border border-slate-200 dark:border-white/10 overflow-hidden">
+            <div class="overflow-x-auto w-full">
+                <table class="w-full text-left whitespace-nowrap">
+                    <thead class="bg-slate-100 dark:bg-white/5 border-b border-slate-200 dark:border-white/10 text-xs text-slate-500 dark:text-slate-400 uppercase font-headline">
+                        <tr>
+                            <th class="px-6 py-4 tracking-wider">Domain</th>
+                            <th class="px-6 py-4 tracking-wider">IMAP Email</th>
+                            <th class="px-6 py-4 tracking-wider">Visibility</th>
+                            <th class="px-6 py-4 text-right tracking-wider">Added</th>
+                            <th class="px-6 py-4 text-center tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="domains-list" class="divide-y divide-slate-100 dark:divide-white/5 bg-white dark:bg-transparent text-slate-700 dark:text-slate-300">
+                        <tr><td colspan="5" class="px-6 py-12 text-center text-slate-400 dark:text-slate-500">Loading your securely encrypted domains...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Domain Modal -->
+    <div id="add-modal" class="fixed inset-0 z-[100] hidden bg-slate-900/60 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-box !bg-white/95 dark:!bg-[#0f172a]/95 rounded-3xl w-full max-w-md p-6 shadow-2xl border !border-slate-200 dark:!border-white/10">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-headline font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-sm">database</span>
+                    </div>
+                    Add Domain Config
+                </h2>
+                <button onclick="document.getElementById('add-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700 dark:hover:text-white p-2 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 transition"><span class="material-symbols-outlined text-sm">close</span></button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5 pl-1">Domain Name</label>
+                    <input type="text" id="domain-input" placeholder="e.g. bbinl.site" class="w-full bg-slate-50 dark:bg-black/50 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-xl px-4 py-3 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                </div>
+                
+                <div class="bg-blue-50 dark:bg-blue-500/10 p-4 rounded-xl border border-blue-100 dark:border-blue-500/20">
+                    <h4 class="text-xs font-bold text-blue-700 dark:text-blue-400 mb-2 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">info</span>
+                        Next Steps
+                    </h4>
+                    <p class="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                        After adding your domain here, please ensure you have set up <b>Cloudflare Email Routing</b> to forward emails to your Worker.
+                    </p>
+                </div>
+
+                <div class="flex items-start justify-between p-4 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200 flex items-center gap-1"><span class="material-symbols-outlined text-sm text-green-600 dark:text-green-500">public</span> Expose Domain?</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 pr-3 leading-relaxed">If checked, any visitor globally can generate fake emails using this domain on the main page.</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer mt-1 shrink-0">
+                        <input type="checkbox" id="public-toggle" class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-300 dark:bg-slate-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 dark:peer-checked:bg-blue-500 border border-slate-400 dark:border-slate-500"></div>
+                    </label>
+                </div>
+                <button id="save-domain-btn" class="w-full btn-gradient text-white rounded-xl py-3.5 font-bold transition-all shadow-md mt-2 flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-sm">cloud_upload</span> Integrate Gateway
+                </button>
+                <p id="modal-error" class="text-xs text-red-500 dark:text-red-400 font-bold text-center hidden"></p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Theme Logic for the toggle -->
+    <script>
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.contains('dark');
+                const newTheme = isDark ? 'light' : 'dark';
+                applyTheme(newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+        }
+    </script>
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
