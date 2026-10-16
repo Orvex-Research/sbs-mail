@@ -28,6 +28,7 @@ if not supabase_url or not supabase_key:
 supabase: Client = create_client(supabase_url, supabase_key)
 
 SYSTEM_DOMAINS = {
+    "idms.eu.cc": "Public Domain",
     "bbinl.site": "Public Domain"
 }
 
