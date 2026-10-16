@@ -6,12 +6,18 @@ from supabase import create_client, Client
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 if os.path.exists(".env"):
     with open(".env") as f:
         for line in f:
             if "=" in line and not line.startswith("#"):
                 k, v = line.strip().split("=", 1)
-                os.environ[k] = v
+                os.environ.setdefault(k, v)
 
 supabase_url = os.environ.get("SUPABASE_URL")
 supabase_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
@@ -179,4 +185,5 @@ def get_emails():
         return jsonify({"error": f"Database error: {str(e)}", "emails": []}), 500
 
 if __name__ == '__main__':
-    app.run(port=8000, debug=True)
+    port = int(os.environ.get("PORT", 8000))
+    app.run(host="0.0.0.0", port=port, debug=False)
