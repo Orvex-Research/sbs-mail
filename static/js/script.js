@@ -58,11 +58,11 @@ function generateRandomString(length) {
 
 function getSavedEmail() {
     const saved = localStorage.getItem('temp_mail_address');
-    if (saved && saved.includes('@bbinl.site')) {
+    if (saved && saved.includes('@')) {
         return saved;
     }
     const hash = window.location.hash.substring(1);
-    if (hash && hash.includes('@bbinl.site')) {
+    if (hash && hash.includes('@')) {
         return hash;
     }
     return null;
@@ -84,7 +84,7 @@ function addToHistory(email) {
 
 function generateNewEmail() {
     const randomName = generateRandomString(8);
-    let domain = 'bbinl.site';
+    let domain = 'idms.eu.cc';
     if (domainSelect && domainSelect.options && domainSelect.options.length > 0) {
         const randomIndex = Math.floor(Math.random() * domainSelect.options.length);
         domain = domainSelect.options[randomIndex].value;
@@ -507,7 +507,7 @@ function submitInputModal() {
         cleanAlias = generateRandomString(8);
     }
 
-    const domain = domainSelect ? domainSelect.value : 'bbinl.site';
+    const domain = domainSelect ? domainSelect.value : 'idms.eu.cc';
     const newEmail = `${cleanAlias}@${domain}`;
     emailInputText.textContent = newEmail;
     saveEmail(newEmail);
@@ -579,7 +579,7 @@ if (privacyNotice && closePrivacyBtn) {
 if (customDomainBtn) {
     customDomainBtn.addEventListener('click', () => {
         const randomAlias = generateRandomString(12);
-        const domain = domainSelect ? domainSelect.value : 'bbinl.site';
+        const domain = domainSelect ? domainSelect.value : 'idms.eu.cc';
         const forwardAddr = `${randomAlias}@${domain}`;
         forwardingAddressCode.textContent = forwardAddr;
 
